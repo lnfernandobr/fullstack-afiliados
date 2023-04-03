@@ -1,7 +1,19 @@
+import { AuthenticatedLayout } from "./layouts/AuthenticatedLayout";
+import { AuthenticatedRoutes } from "./routes/AuthenticatedRoutes";
+import { UnauthenticatedRoutes } from "./routes/UnauthenticatedRoutes";
+
+const useLoggedUser = () => ({ loggedUser: true });
+
 export function App() {
+  const { loggedUser } = useLoggedUser();
+
+  if (!loggedUser) {
+    return <UnauthenticatedRoutes />;
+  }
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-    </div>
+    <AuthenticatedLayout>
+      <AuthenticatedRoutes />
+    </AuthenticatedLayout>
   );
 }
