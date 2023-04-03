@@ -1,0 +1,13 @@
+{
+  "name": "fullstack-afiliados",
+  "private": true,
+  "version": "1.0.0",
+  "author": "Fernando <lnfernandobr@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "run:server": "yarn workspace @fullstack-afiliados/server run start"
+  },
+  "workspaces": {
+    "packages": ["packages/*"]
+  }
+}

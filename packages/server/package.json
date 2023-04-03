@@ -1,0 +1,9 @@
+{
+  "name": "@fullstack-afiliados/server",
+  "version": "1.0.0",
+  "main": "main.mjs",
+  "license": "MIT",
+  "scripts": {
+    "start": "node main.mjs"
+  }
+}
