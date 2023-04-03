@@ -5,7 +5,8 @@
   "author": "Fernando <lnfernandobr@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "run:server": "yarn workspace @fullstack-afiliados/server run start"
+    "run:server": "yarn workspace @fullstack-afiliados/server run start",
+    "run:client": "yarn workspace @fullstack-afiliados/client run start"
   },
   "workspaces": {
     "packages": ["packages/*"]
