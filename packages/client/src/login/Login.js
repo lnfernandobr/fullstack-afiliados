@@ -23,6 +23,7 @@ export const Login = () => {
       const response = await api.post(url, {
         email: form.email.toLowerCase().trim(),
         password: form.password,
+        ...(isRegister ? { name: form.name } : {}),
       });
       setIsAuthenticated(true);
       localStorage.setItem("token", response.data.token);
