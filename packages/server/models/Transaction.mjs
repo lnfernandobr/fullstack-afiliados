@@ -5,5 +5,6 @@ export default (sequelize, DataTypes) => {
     amount: DataTypes.INTEGER,
     seller: DataTypes.STRING,
     type: DataTypes.INTEGER,
+    userId: DataTypes.STRING,
   });
 };

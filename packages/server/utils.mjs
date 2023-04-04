@@ -29,10 +29,9 @@ export const parseFileContent = (fileContent) => {
   return data;
 };
 
-export const saveTransactions = async (transactions) => {
+export const saveTransactions = async ({ transactions, userId }) => {
   try {
     await sequelize.sync({ force: true });
-
     for (const transaction of transactions) {
       const { type, date, product, value, seller } = transaction;
       await Transaction.create({
@@ -41,6 +40,7 @@ export const saveTransactions = async (transactions) => {
         product,
         amount: value,
         seller,
+        userId,
       });
     }
 

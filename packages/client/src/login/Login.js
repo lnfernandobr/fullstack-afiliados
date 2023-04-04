@@ -5,6 +5,7 @@ import { useAuth } from "../users/UserContext";
 import { api } from "../services/api";
 import { RoutePaths } from "../routes/RoutePaths";
 import { Logo } from "../components/Logo";
+import { TOKEN_KEY } from "../constants";
 
 export const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -25,10 +26,14 @@ export const Login = () => {
         password: form.password,
         ...(isRegister ? { name: form.name } : {}),
       });
-      setIsAuthenticated(true);
-      localStorage.setItem("token", response.data.token);
-      navigate(RoutePaths.ROOT);
-      toast("Bem vindo!", { type: "success" });
+
+      if (response.data.token) {
+        localStorage.setItem(TOKEN_KEY, response.data.token);
+
+        setIsAuthenticated(true);
+        navigate(RoutePaths.ROOT);
+        toast("Bem vindo!", { type: "success" });
+      }
     } catch (err) {
       console.log(err);
       toast(err?.response?.data.message || "Email ou senha incorretos", {

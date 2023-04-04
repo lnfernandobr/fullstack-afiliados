@@ -3,6 +3,7 @@ import { sequelize, Transaction } from "../models/index.mjs";
 export const handleTransactions = async (req, res) => {
   try {
     const { page } = req.query;
+
     const limit = 10;
     const offset = (page - 1) * limit;
 

@@ -1,5 +1,6 @@
 import { api } from "./services/api";
 import { format } from "date-fns";
+import {TOKEN_KEY} from "./constants";
 
 export const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
@@ -8,7 +9,7 @@ export const classNames = (...classes) => {
 export const logout = async () => {
   try {
     await api.post("/auth/signout");
-    localStorage.removeItem("token");
+    localStorage.removeItem(TOKEN_KEY);
     window.location = "/";
   } catch (error) {
     console.log(error);

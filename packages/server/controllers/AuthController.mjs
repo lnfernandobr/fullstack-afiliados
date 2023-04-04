@@ -10,7 +10,7 @@ export const signIn = async (req, res) => {
   const user = await User.findOne({
     where: {
       email: {
-        [Op.eq]: email,
+        [Op.eq]: email.toLowerCase().trim(),
       },
     },
   });
@@ -38,4 +38,23 @@ export const signOut = async (req, res) => {
   await Token.destroy({ where: { token: authorization } });
 
   return res.json({ message: "Logout realizado com sucesso" });
+};
+
+export const requireAuth = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Token de autenticação não fornecido" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, jwtSecret);
+    console.log("decoded", decoded);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Token de autenticação inválido" });
+  }
 };
