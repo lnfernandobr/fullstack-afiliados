@@ -1,9 +1,10 @@
 import { sequelize, Transaction } from "../models/index.mjs";
+import { Op } from "sequelize";
 
 export const handleTransactions = async (req, res) => {
   try {
     const { page } = req.query;
-
+    const { userId } = req.user;
     const limit = 10;
     const offset = (page - 1) * limit;
 
@@ -24,6 +25,11 @@ export const handleTransactions = async (req, res) => {
         ],
       ],
       group: ["seller", "product"],
+      where: {
+        userId: {
+          [Op.eq]: userId,
+        },
+      },
     });
 
     const totalPages = Math.ceil(transactions.count / limit);
