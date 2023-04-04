@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { api } from "./services/api";
-import {useAuth, useLoggedUser} from "./users/UserContext";
+import { useAuth, useLoggedUser } from "./users/UserContext";
 import { RoutePaths } from "./routes/RoutePaths";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -15,19 +16,22 @@ export const Login = () => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
+
     try {
       const url = isRegister ? "/users/signup" : "/auth/signin";
       const response = await api.post(url, {
         email: form.email.toLowerCase().trim(),
         password: form.password,
       });
-
+      console.log(response);
       setIsAuthenticated(true);
       localStorage.setItem("token", response.data.token);
       navigate(RoutePaths.ROOT);
     } catch (err) {
-      console.error(err);
-      alert("Email or password incorrect!");
+      console.log(err);
+      toast(err?.response?.data.message || "Email ou senha incorretos", {
+        type: "error",
+      });
     }
   };
 

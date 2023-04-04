@@ -3,8 +3,11 @@ import bcrypt from "bcrypt";
 export default (sequelize, DataTypes) => {
   const User = sequelize.define("User", {
     name: DataTypes.STRING,
-    email: DataTypes.STRING,
     password: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
   });
 
   User.beforeSave(async (user) => {
@@ -13,9 +16,8 @@ export default (sequelize, DataTypes) => {
     }
   });
 
-  User.prototype.comparePassword = function comparePassword(password) {
-    return bcrypt.compare(password, this.password);
-  };
+  User.prototype.comparePassword = (password) =>
+    bcrypt.compare(password, this.password);
 
   return User;
 };
