@@ -16,23 +16,34 @@ export const Login = () => {
   const onChange = ({ target: { value, name } }) =>
     setForm((prevState) => ({ ...prevState, [name]: value }));
 
+  const handleLogin = (token) => {
+    localStorage.setItem(TOKEN_KEY, token);
+    setIsAuthenticated(true);
+    navigate(RoutePaths.ROOT);
+    toast("Bem vindo!", { type: "success" });
+  };
+
   const onSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const url = isRegister ? "/users/signup" : "/auth/signin";
-      const response = await api.post(url, {
+      const data = {
         email: form.email.toLowerCase().trim(),
         password: form.password,
         ...(isRegister ? { name: form.name } : {}),
-      });
+      };
 
-      if (response.data.token) {
-        localStorage.setItem(TOKEN_KEY, response.data.token);
+      const response = await api.post(url, data);
 
-        setIsAuthenticated(true);
-        navigate(RoutePaths.ROOT);
-        toast("Bem vindo!", { type: "success" });
+      if (isRegister && response.data.id) {
+        api.post("/auth/signin", data).then((r) => handleLogin(r.data.token));
+        return;
+      }
+
+      const tk = response.data.token;
+      if (tk) {
+        handleLogin(tk);
       }
     } catch (err) {
       console.log(err);

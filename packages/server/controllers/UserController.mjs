@@ -7,7 +7,7 @@ export const signup = async (req, res) => {
   const userDb = await User.findOne({
     where: {
       email: {
-        [Op.eq]: email,
+        [Op.eq]: email.toLocaleString().trim(),
       },
     },
   });
