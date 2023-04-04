@@ -1,5 +1,5 @@
-import { User } from "../models/index.mjs";
-import { Op } from "sequelize";
+import { User } from '../models/index.mjs';
+import { Op } from 'sequelize';
 
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -13,7 +13,7 @@ export const signup = async (req, res) => {
   });
 
   if (userDb) {
-    return res.status(409).json({ message: "Usuário já existe" });
+    return res.status(409).json({ message: 'Usuário já existe' });
   }
 
   const user = await User.create({ name, email, password });

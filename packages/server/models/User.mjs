@@ -1,7 +1,7 @@
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
 export default (sequelize, DataTypes) => {
-  const User = sequelize.define("User", {
+  const User = sequelize.define('User', {
     name: DataTypes.STRING,
     password: DataTypes.STRING,
     email: {
@@ -11,7 +11,7 @@ export default (sequelize, DataTypes) => {
   });
 
   User.beforeSave(async (user) => {
-    if (user.changed("password")) {
+    if (user.changed('password')) {
       user.password = await bcrypt.hash(user.password, 10);
     }
   });

@@ -1,13 +1,15 @@
-import * as dotenv from "dotenv";
+'use strict';
+
+import * as dotenv from 'dotenv';
 dotenv.config();
 
-import express from "express";
-import cors from "cors";
-import { sequelize } from "./models/index.mjs";
-import { authRoutes } from "./routes/auth.mjs";
-import { userRoutes } from "./routes/users.mjs";
-import { transactionRoutes } from "./routes/transactions.mjs";
-import { uploadRoutes } from "./routes/upload.mjs";
+import express from 'express';
+import cors from 'cors';
+import { sequelize } from './models/index.mjs';
+import { authRoutes } from './routes/auth.mjs';
+import { userRoutes } from './routes/users.mjs';
+import { transactionRoutes } from './routes/transactions.mjs';
+import { uploadRoutes } from './routes/upload.mjs';
 
 const app = express();
 const port = process.env.PORT;
@@ -17,12 +19,21 @@ app.use(cors());
 
 sequelize
   .authenticate()
-  .then(() => console.log("Connection established with the database"))
-  .catch((err) => console.error("Unable to connect to database", err));
+  .then(() => {
+    // eslint-disable-next-line no-console
+    console.log('Connection established with the database');
+  })
+  .catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error('Unable to connect to database', err);
+  });
 
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-app.use("/transactions", transactionRoutes);
-app.use("/upload", uploadRoutes);
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/transactions', transactionRoutes);
+app.use('/upload', uploadRoutes);
 
-app.listen(port, () => console.log(`Server is running on port: ${port}`));
+app.listen(port, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Server is running on port: ${port}`);
+});

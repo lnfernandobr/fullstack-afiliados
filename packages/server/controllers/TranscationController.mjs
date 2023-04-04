@@ -1,5 +1,5 @@
-import { sequelize, Transaction } from "../models/index.mjs";
-import { Op } from "sequelize";
+import { sequelize, Transaction } from '../models/index.mjs';
+import { Op } from 'sequelize';
 
 export const handleTransactions = async (req, res) => {
   try {
@@ -12,19 +12,19 @@ export const handleTransactions = async (req, res) => {
       limit,
       offset,
       attributes: [
-        "product",
-        "seller",
+        'product',
+        'seller',
         [
           sequelize.fn(
-            "SUM",
+            'SUM',
             sequelize.literal(
-              `CASE WHEN type = 1 or type = 2 THEN amount ELSE -amount END`
-            )
+              `CASE WHEN type = 1 or type = 2 THEN amount ELSE -amount END`,
+            ),
           ),
-          "amount",
+          'amount',
         ],
       ],
-      group: ["seller", "product"],
+      group: ['seller', 'product'],
       where: {
         userId: {
           [Op.eq]: userId,
@@ -39,6 +39,6 @@ export const handleTransactions = async (req, res) => {
       totalPages,
     });
   } catch (err) {
-    res.status(500).send("Error fetching transactions");
+    res.status(500).send('Error fetching transactions');
   }
 };

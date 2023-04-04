@@ -1,5 +1,5 @@
 export default (sequelize, DataTypes) => {
-  return sequelize.define("Token", {
+  return sequelize.define('Token', {
     token: DataTypes.STRING,
   });
 };
