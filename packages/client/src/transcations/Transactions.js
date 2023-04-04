@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { toast } from "react-toastify";
-import { formatDate, formatMoney } from "../utils";
+import { formatMoney } from "../utils";
 import { Modal } from "../components/Modal";
+import { useQuery } from "react-query";
 
 const AiOutlineCloudUpload = ({ className }) => (
   <svg
@@ -19,29 +20,27 @@ const AiOutlineCloudUpload = ({ className }) => (
   </svg>
 );
 
-export const UploadTransactions = () => {
+export const Transactions = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [transactions, setTransactions] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchTransactions = async (page) => {
-    const response = await api.get(`/transactions?page=${page}`);
-    const { transactions, totalPages } = response.data;
-    setTransactions(transactions);
-    setTotalPages(totalPages);
+  const fetchTransactions = async () => {
+    const response = await api.get(`/transactions?page=${currentPage}`);
+    return response.data;
   };
+
+  const {
+    data: { transactions, totalPages } = {},
+    isLoading: isLoadingData,
+    error,
+    refetch,
+  } = useQuery("transactions", fetchTransactions);
 
   const handleFileInput = (event) => {
     setSelectedFile(event.target.files[0]);
   };
-
-  useEffect(() => {
-    fetchTransactions(currentPage);
-  }, [currentPage]);
 
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
@@ -72,8 +71,11 @@ export const UploadTransactions = () => {
       .then((response) => {
         toast("Suas tranções foram enviadas.", { type: "success" });
         toast("O processamento já foi iniciado.", { type: "warning" });
-        setOpen(false);
-        setSelectedFile(null);
+
+        refetch().then((r) => {
+          setOpen(false);
+          setSelectedFile(null);
+        });
       })
       .catch(console.error)
       .finally(() => {
@@ -93,51 +95,79 @@ export const UploadTransactions = () => {
             Adicionar transação
           </button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="table-auto border-collapse w-full">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Vendedor
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Produto
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Valor
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((transaction, idx) => (
-                <tr key={idx} className="border border-gray-300">
-                  <td className="border py-2 px-4">{transaction.seller}</td>
-                  <td className="border py-2 px-4">{transaction.product}</td>
-                  <td className="border py-2 px-4 text-right">
-                    {formatMoney(transaction.amount)}
-                  </td>
-                </tr>
+        {transactions?.length > 0 || isLoadingData ? (
+          <>
+            <div className="overflow-x-auto">
+              <table className="table-auto border-collapse w-full">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-300 px-4 py-2 text-left">
+                      Vendedor
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">
+                      Produto
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">
+                      Valor
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(isLoadingData
+                    ? [{}, {}, {}, {}, {}, {}, {}]
+                    : transactions
+                  ).map((transaction, idx) => (
+                    <tr key={idx} className="border border-gray-300">
+                      <td className="border py-2 px-4">
+                        {isLoadingData ? (
+                          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                        ) : (
+                          transaction.seller
+                        )}
+                      </td>
+                      <td className="border py-2 px-4">
+                        {isLoadingData ? (
+                          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                        ) : (
+                          transaction.product
+                        )}
+                      </td>
+                      <td className="border py-2 px-4 text-right">
+                        {isLoadingData ? (
+                          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                        ) : (
+                          formatMoney(transaction.amount)
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-center items-center mt-4">
+              {pageNumbers.map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  onClick={() => handleClick(pageNumber)}
+                  className={`ml-2 px-3 py-1 rounded-md text-white ${
+                    pageNumber === currentPage
+                      ? "bg-blue-500"
+                      : "bg-gray-300 hover:bg-blue-500"
+                  }`}
+                  disabled={pageNumber === currentPage}
+                >
+                  {pageNumber}
+                </button>
               ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="flex justify-center items-center mt-4">
-          {pageNumbers.map((pageNumber) => (
-            <button
-              key={pageNumber}
-              onClick={() => handleClick(pageNumber)}
-              className={`ml-2 px-3 py-1 rounded-md text-white ${
-                pageNumber === currentPage
-                  ? "bg-blue-500"
-                  : "bg-gray-300 hover:bg-blue-500"
-              }`}
-              disabled={pageNumber === currentPage}
-            >
-              {pageNumber}
-            </button>
-          ))}
-        </div>
+            </div>
+          </>
+        ) : (
+          <div>
+            <p className="text-gray-600">
+              Você não adicionou nenhuma transação ainda.
+            </p>
+          </div>
+        )}
       </div>
 
       <Modal open={open} setOpen={setOpen}>

@@ -4,13 +4,18 @@ import { AuthProvider } from "./users/UserContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { QueryClient, QueryClientProvider } from "react-query";
+const queryClient = new QueryClient();
+
 export const AppContainer = () => {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <App />
-        <ToastContainer />
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <App />
+          <ToastContainer />
+        </AuthProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   );
 };

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { api } from "./services/api";
-import { useAuth } from "./users/UserContext";
-import { RoutePaths } from "./routes/RoutePaths";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from "../users/UserContext";
+import { api } from "../services/api";
+import { RoutePaths } from "../routes/RoutePaths";
 
 export const Login = () => {
   const [isRegister, setIsRegister] = useState(false);

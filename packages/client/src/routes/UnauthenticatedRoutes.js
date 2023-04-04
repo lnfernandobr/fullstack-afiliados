@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { RoutePaths } from "./RoutePaths";
-import { Login } from "../Login";
+import { Login } from "../login/Login";
 
 export const UnauthenticatedRoutes = () => (
   <Routes>
