@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "./services/api";
-import { useAuth, useLoggedUser } from "./users/UserContext";
+import { useAuth } from "./users/UserContext";
 import { RoutePaths } from "./routes/RoutePaths";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -26,6 +26,7 @@ export const Login = () => {
       setIsAuthenticated(true);
       localStorage.setItem("token", response.data.token);
       navigate(RoutePaths.ROOT);
+      toast("Bem vindo!", { type: "success" });
     } catch (err) {
       console.log(err);
       toast(err?.response?.data.message || "Email ou senha incorretos", {

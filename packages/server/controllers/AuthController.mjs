@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { User, Token } from "../models/index.mjs";
-import bcrypt from "bcrypt";
 
 const jwtSecret = process.env.JWT_SECRET;
 
