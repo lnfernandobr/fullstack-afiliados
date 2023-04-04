@@ -23,7 +23,6 @@ export const Login = () => {
         email: form.email.toLowerCase().trim(),
         password: form.password,
       });
-      console.log(response);
       setIsAuthenticated(true);
       localStorage.setItem("token", response.data.token);
       navigate(RoutePaths.ROOT);
