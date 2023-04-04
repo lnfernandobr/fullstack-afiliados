@@ -7,7 +7,7 @@ import { UserIcon } from "../components/UserIcon";
 import { classNames, logout } from "../utils";
 
 export const AuthenticatedLayout = ({ children }) => {
-  const navigation = [{ name: "Inicio", onClick() {}, current: true }];
+  const navigation = [{ name: "Transações", onClick() {}, current: true }];
 
   const userNavigation = [
     {
