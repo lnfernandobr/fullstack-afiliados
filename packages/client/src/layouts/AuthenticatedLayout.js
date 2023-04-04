@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { UserIcon } from "../components/UserIcon";
-import { classNames } from "../utils";
+import { classNames, logout } from "../utils";
 
 export const AuthenticatedLayout = ({ children }) => {
   const navigation = [{ name: "Inicio", onClick() {}, current: true }];
@@ -12,8 +12,8 @@ export const AuthenticatedLayout = ({ children }) => {
   const userNavigation = [
     {
       name: "Sair",
-      onClick() {
-        alert("saiu");
+      async onClick() {
+        await logout();
       },
     },
   ];
@@ -70,10 +70,10 @@ export const AuthenticatedLayout = ({ children }) => {
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
                                   <a
-                                    href={item.href}
+                                    onClick={item.onClick}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
-                                      "block px-4 py-2 text-sm text-gray-700"
+                                      "cursor-pointer block px-4 py-2 text-sm text-gray-700"
                                     )}
                                   >
                                     {item.name}

@@ -4,7 +4,7 @@
   "main": "app.mjs",
   "license": "MIT",
   "scripts": {
-    "start": "node -r dotenv/config app.mjs"
+    "start": "nodemon -r dotenv/config app.mjs"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -13,6 +13,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.2.0",
+    "nodemon": "^2.0.22",
     "sequelize": "^6.30.0"
   }
 }

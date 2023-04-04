@@ -1,7 +1,35 @@
 import { useState } from "react";
+import { api } from "./services/api";
+import {useAuth, useLoggedUser} from "./users/UserContext";
+import { RoutePaths } from "./routes/RoutePaths";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
+  const [form, setForm] = useState({ password: "", email: "" });
+  const { setIsAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const onChange = ({ target: { value, name } }) =>
+    setForm((prevState) => ({ ...prevState, [name]: value }));
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const url = isRegister ? "/users/signup" : "/auth/signin";
+      const response = await api.post(url, {
+        email: form.email.toLowerCase().trim(),
+        password: form.password,
+      });
+
+      setIsAuthenticated(true);
+      localStorage.setItem("token", response.data.token);
+      navigate(RoutePaths.ROOT);
+    } catch (err) {
+      console.error(err);
+      alert("Email or password incorrect!");
+    }
+  };
 
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -18,7 +46,7 @@ export const Login = () => {
           </button>
         </div>
 
-        <form className="mt-8 space-y-6" action="#" method="POST">
+        <form className="mt-8 space-y-6" onSubmit={onSubmit}>
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
@@ -26,6 +54,7 @@ export const Login = () => {
                 Email
               </label>
               <input
+                onChange={onChange}
                 id="email-address"
                 name="email"
                 type="email"
@@ -42,6 +71,7 @@ export const Login = () => {
               <input
                 id="password"
                 name="password"
+                onChange={onChange}
                 type="password"
                 autoComplete="current-password"
                 required
@@ -56,7 +86,7 @@ export const Login = () => {
               type="submit"
               className="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Entrar
+              {isRegister ? "Cadastrar" : "Entrar"}
             </button>
           </div>
         </form>

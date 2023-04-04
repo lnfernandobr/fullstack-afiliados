@@ -15,7 +15,6 @@ export const signIn = async (req, res) => {
       },
     },
   });
-  console.log("userDb", user);
 
   if (!user) {
     return res.status(401).json({ message: "Usuário não encontrado" });
@@ -40,22 +39,4 @@ export const signOut = async (req, res) => {
   await Token.destroy({ where: { token: authorization } });
 
   return res.json({ message: "Logout realizado com sucesso" });
-};
-
-export const signUp = async (req, res) => {
-  const { email, password } = req.body;
-
-  const userExists = await User.findOne({ where: { email } });
-  if (userExists) {
-    return res.status(400).json({ error: "Usuário já existe" });
-  }
-
-  const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(password, salt);
-
-  const user = await User.create({ email, password: hash });
-
-  const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: 3600 });
-
-  res.json({ token });
 };

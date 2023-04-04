@@ -1,13 +1,12 @@
 import { AuthenticatedLayout } from "./layouts/AuthenticatedLayout";
 import { AuthenticatedRoutes } from "./routes/AuthenticatedRoutes";
 import { UnauthenticatedRoutes } from "./routes/UnauthenticatedRoutes";
-
-const useLoggedUser = () => ({ loggedUser: true });
+import { useAuth } from "./users/UserContext";
 
 export function App() {
-  const { loggedUser } = useLoggedUser();
+  const { isAuthenticated } = useAuth();
 
-  if (!loggedUser) {
+  if (!isAuthenticated) {
     return <UnauthenticatedRoutes />;
   }
 
