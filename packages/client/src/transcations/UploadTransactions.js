@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { api } from "../services/api";
+import { toast } from "react-toastify";
 
 const AiOutlineCloudUpload = ({ className }) => (
   <svg
@@ -26,6 +28,22 @@ export const UploadTransactions = () => {
     event.preventDefault();
     if (selectedFile) {
       console.log(`Uploading file ${selectedFile.name}...`);
+
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      api
+        .post("/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          toast(
+            "Suas tranções foram enviadas. O processamento já foi iniciado"
+          );
+        })
+        .catch(console.error);
     }
   };
 
@@ -50,7 +68,7 @@ export const UploadTransactions = () => {
             type="file"
             className="hidden"
             onChange={handleFileInput}
-            accept=".csv,.xls,.xlsx"
+            accept=".txt"
           />
         </div>
         <button

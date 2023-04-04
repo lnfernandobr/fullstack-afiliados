@@ -1,6 +1,5 @@
 export default (sequelize, DataTypes) => {
-  const Token = sequelize.define("Token", {
+  return sequelize.define("Token", {
     token: DataTypes.STRING,
   });
-  return Token;
 };
