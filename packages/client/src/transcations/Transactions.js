@@ -25,31 +25,19 @@ export const Transactions = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchTransactions = async () => {
-    const response = await api.get(`/transactions?page=${currentPage}`);
+    const response = await api.get("/transactions");
     return response.data;
   };
 
   const {
-    data: { transactions, totalPages } = {},
+    data: { transactions } = {},
     isLoading: isLoadingData,
     refetch,
   } = useQuery("transactions", fetchTransactions);
 
-  const handleFileInput = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
-
-  const handleClick = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const handleFileInput = (event) => setSelectedFile(event.target.files[0]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -141,22 +129,6 @@ export const Transactions = () => {
                   ))}
                 </tbody>
               </table>
-            </div>
-            <div className="flex justify-center items-center mt-4">
-              {pageNumbers.map((pageNumber) => (
-                <button
-                  key={pageNumber}
-                  onClick={() => handleClick(pageNumber)}
-                  className={`ml-2 px-3 py-1 rounded-md text-white ${
-                    pageNumber === currentPage
-                      ? "bg-blue-500"
-                      : "bg-gray-300 hover:bg-blue-500"
-                  }`}
-                  disabled={pageNumber === currentPage}
-                >
-                  {pageNumber}
-                </button>
-              ))}
             </div>
           </>
         ) : (
