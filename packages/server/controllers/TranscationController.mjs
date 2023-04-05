@@ -10,17 +10,13 @@ import { Op } from 'sequelize';
 export const getTransactions = async (req, res) => {
   try {
     const { userId } = req.user;
-    const limit = 10;
     const transactions = await sequelize.query(
       `SELECT creators.name as seller, 'creator' as type, products.name as product, NULL as affiliate, SUM(Transactions.value) as value FROM Creators creators INNER JOIN Transactions ON creators.id = Transactions.creatorId INNER JOIN Products products ON products.id = Transactions.productId GROUP BY creators.id, products.id UNION ALL SELECT affiliates.name as seller, 'affiliate' as type, products.name as product, NULL as affiliate, SUM(Transactions.value) as value FROM Affiliates affiliates INNER JOIN Transactions ON affiliates.id = Transactions.affiliateId INNER JOIN Products products ON products.id = Transactions.productId WHERE Transactions.userId = ${userId} GROUP BY affiliates.id, products.id ORDER BY seller, type;`,
       {
         type: sequelize.QueryTypes.SELECT,
       },
     );
-    res.json({
-      transactions: transactions,
-      totalPages: transactions.length / limit,
-    });
+    res.json({ transactions: transactions });
   } catch (err) {
     res.status(500).send('Error fetching transactions');
   }
@@ -57,7 +53,7 @@ const createOrFindAffiliate = async ({ name }) => {
   return Affiliate.create({ name });
 };
 
-const createTranscation = async (transcation) => {
+export const createTranscation = async (transcation) => {
   // if transcation was already synced we'll find it in database.
   const transcationDb = await Transaction.findOne({
     where: {
@@ -146,6 +142,7 @@ export const saveTransactions = async ({ transactions, userId }) => {
     const productDb = await Product.findOne({
       where: { name: transaction.product },
     });
+    console.log('feproduct', transaction, productDb);
 
     if (transaction.type === AFFILIATE_SALE) {
       const affiliateDb = await createOrFindAffiliate({
