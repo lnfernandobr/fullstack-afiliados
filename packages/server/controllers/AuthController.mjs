@@ -53,6 +53,6 @@ export const requireAuth = (req, res, next) => {
     req.user = jwt.verify(token, jwtSecret);
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Token de autenticação inválido' });
+   return res.status(401).json({ message: 'Token de autenticação inválido' });
   }
 };

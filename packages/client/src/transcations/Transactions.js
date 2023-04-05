@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { formatMoney } from "../utils";
 import { Modal } from "../components/Modal";
 import { useQuery } from "react-query";
+import { clientErrorHandler } from "../services/errorHandler";
 
 const AiOutlineCloudUpload = ({ className }) => (
   <svg
@@ -74,7 +75,7 @@ export const Transactions = () => {
           setSelectedFile(null);
         });
       })
-      .catch(console.error)
+      .catch(clientErrorHandler)
       .finally(() => {
         setIsLoading(false);
       });
