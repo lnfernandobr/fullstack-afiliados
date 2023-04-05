@@ -4,7 +4,6 @@ import { handleUploads } from '../controllers/UploadController.mjs';
 import { requireAuth } from '../controllers/AuthController.mjs';
 
 const router = express.Router();
-
 const upload = multer({ dest: 'uploads/' });
 
 router.post('/', requireAuth, upload.single('file'), handleUploads);

@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { parseFileContent, saveTransactions } from '../utils.mjs';
+import { parseFileContent } from '../utils.mjs';
+import { saveTransactions } from './TranscationController.mjs';
 
 export const handleUploads = async (req, res) => {
   try {

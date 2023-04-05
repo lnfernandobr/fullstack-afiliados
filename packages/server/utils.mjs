@@ -1,5 +1,3 @@
-import { sequelize, Transaction } from './models/index.mjs';
-
 export const parseFileContent = (fileContent) => {
   const rows = fileContent.split('\n');
   const data = [];
@@ -27,26 +25,4 @@ export const parseFileContent = (fileContent) => {
   }
 
   return data;
-};
-
-export const saveTransactions = async ({ transactions, userId }) => {
-  try {
-    await sequelize.sync({ force: true });
-    for (const transaction of transactions) {
-      const { type, date, product, value, seller } = transaction;
-      await Transaction.create({
-        type,
-        date,
-        product,
-        amount: value,
-        seller,
-        userId,
-      });
-    }
-    // eslint-disable-next-line no-console
-    console.log('Transactions saved successfully!');
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error saving transactions:', error);
-  }
 };

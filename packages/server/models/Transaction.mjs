@@ -1,10 +1,24 @@
 export default (sequelize, DataTypes) => {
-  return sequelize.define('transaction', {
+  return sequelize.define('Transaction', {
     date: DataTypes.DATE,
-    product: DataTypes.STRING,
-    amount: DataTypes.INTEGER,
-    seller: DataTypes.STRING,
-    type: DataTypes.INTEGER,
+    value: DataTypes.INTEGER,
     userId: DataTypes.STRING,
+    type: DataTypes.INTEGER,
+    creatorId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    affiliateId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    productId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    saleMadeBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   });
 };

@@ -2,6 +2,9 @@ import Sequelize from 'sequelize';
 import UserModel from './User.mjs';
 import TokenModel from './Token.mjs';
 import TransactionModel from './Transaction.mjs';
+import CreatorModel from './Creator.mjs';
+import ProductModel from './Product.mjs';
+import AffiliateModel from './Affiliate.mjs';
 
 const sequelize = new Sequelize(
   process.env.DB_DATABASE,
@@ -15,7 +18,11 @@ const sequelize = new Sequelize(
 
 const User = UserModel(sequelize, Sequelize);
 const Token = TokenModel(sequelize, Sequelize);
+
+const Product = ProductModel(sequelize, Sequelize);
 const Transaction = TransactionModel(sequelize, Sequelize);
+const Creator = CreatorModel(sequelize, Sequelize);
+const Affiliate = AffiliateModel(sequelize, Sequelize);
 
 sequelize
   .sync({ force: false })
@@ -28,4 +35,4 @@ sequelize
     console.error('Unable to synchronize tables with database', err);
   });
 
-export { User, Token, Transaction, sequelize };
+export { User, Token, Transaction, Affiliate, Product, Creator, sequelize };
