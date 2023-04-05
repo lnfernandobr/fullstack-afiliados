@@ -73,7 +73,7 @@ export const Transactions = () => {
     <>
       <div className="p-4">
         <div className="flex justify-between mb-4">
-          <h1 className="text-2xl font-bold ">Transcações</h1>
+          <h1 className="text-2xl font-bold text-gray-600">Transcações</h1>
           <button
             className="bg-blue-500 text-white font-bold px-4 rounded-full"
             onClick={() => setOpen(!open)}
