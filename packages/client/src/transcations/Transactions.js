@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { api } from "../services/api";
 import { toast } from "react-toastify";
 import { formatMoney } from "../utils";
@@ -34,7 +34,6 @@ export const Transactions = () => {
   const {
     data: { transactions, totalPages } = {},
     isLoading: isLoadingData,
-    error,
     refetch,
   } = useQuery("transactions", fetchTransactions);
 
@@ -68,10 +67,8 @@ export const Transactions = () => {
           "Content-Type": "multipart/form-data",
         },
       })
-      .then((response) => {
+      .then(() => {
         toast("Suas tranções foram enviadas.", { type: "success" });
-        toast("O processamento já foi iniciado.", { type: "warning" });
-
         refetch().then((r) => {
           setOpen(false);
           setSelectedFile(null);

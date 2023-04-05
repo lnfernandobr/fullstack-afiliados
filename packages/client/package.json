@@ -23,7 +23,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint . --ext .js",
+    "prettier": "prettier --write \"**/*.js\"",
+    "lint:fix": "eslint . --ext .js --fix",
+    "format": "npm run prettier && npm run lint:fix"
   },
   "eslintConfig": {
     "extends": [

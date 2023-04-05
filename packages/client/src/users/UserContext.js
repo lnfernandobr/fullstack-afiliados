@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import {TOKEN_KEY} from "../constants";
+import { TOKEN_KEY } from "../constants";
 
 export const AuthContext = createContext();
 

@@ -1,6 +1,6 @@
 import { api } from "./services/api";
 import { format } from "date-fns";
-import {TOKEN_KEY} from "./constants";
+import { TOKEN_KEY } from "./constants";
 
 export const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");

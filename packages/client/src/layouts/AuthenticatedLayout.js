@@ -69,7 +69,7 @@ export const AuthenticatedLayout = ({ children }) => {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
+                                  <label
                                     onClick={item.onClick}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
@@ -77,7 +77,7 @@ export const AuthenticatedLayout = ({ children }) => {
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </label>
                                 )}
                               </Menu.Item>
                             ))}
