@@ -11,7 +11,7 @@ export const getTransactions = async (req, res) => {
   try {
     const { userId } = req.user;
     const transactions = await sequelize.query(
-      `SELECT creators.name as seller, 'creator' as type, products.name as product, NULL as affiliate, SUM(Transactions.value) as value FROM Creators creators INNER JOIN Transactions ON creators.id = Transactions.creatorId INNER JOIN Products products ON products.id = Transactions.productId GROUP BY creators.id, products.id UNION ALL SELECT affiliates.name as seller, 'affiliate' as type, products.name as product, NULL as affiliate, SUM(Transactions.value) as value FROM Affiliates affiliates INNER JOIN Transactions ON affiliates.id = Transactions.affiliateId INNER JOIN Products products ON products.id = Transactions.productId WHERE Transactions.userId = ${userId} GROUP BY affiliates.id, products.id ORDER BY seller, type;`,
+      `SELECT creators.name as seller, 'creator' as type, products.name as product, NULL as affiliate, SUM(Transactions.value) as value FROM Creators creators INNER JOIN Transactions ON creators.id = Transactions.creatorId INNER JOIN Products products ON products.id = Transactions.productId WHERE Transactions.userId = ${userId} GROUP BY creators.id, products.id UNION ALL SELECT affiliates.name as seller, 'affiliate' as type, products.name as product, NULL as affiliate, SUM(Transactions.value) as value FROM Affiliates affiliates INNER JOIN Transactions ON affiliates.id = Transactions.affiliateId INNER JOIN Products products ON products.id = Transactions.productId WHERE Transactions.userId = ${userId} GROUP BY affiliates.id, products.id ORDER BY seller, type;`,
       {
         type: sequelize.QueryTypes.SELECT,
       },
@@ -65,6 +65,9 @@ export const createTranscation = async (transcation) => {
       },
       productId: {
         [Op.eq]: transcation.productId,
+      },
+      userId: {
+        [Op.eq]: transcation.userId,
       },
       ...(transcation.affiliateId
         ? {
@@ -142,7 +145,6 @@ export const saveTransactions = async ({ transactions, userId }) => {
     const productDb = await Product.findOne({
       where: { name: transaction.product },
     });
-    console.log('feproduct', transaction, productDb);
 
     if (transaction.type === AFFILIATE_SALE) {
       const affiliateDb = await createOrFindAffiliate({
