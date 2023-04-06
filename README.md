@@ -6,6 +6,12 @@ In this challenge, the goal is to create a web interface to upload a sales trans
 
 ## Introduction
 This project is the solution to the proposed challenge. It is a monorepo with the client and server projects. The server is mainly built with Express and Sequelize, while the client is made with React and styled with TailwindCSS. Jest was used for testing both the back and front-end components.  
+
+# Preview
+![Login](images/print.png)
+![Sending Transcations](images/print2.png)
+![Transcations](images/print3.png)
+
  
 ## Stack
 
