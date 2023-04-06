@@ -4,6 +4,7 @@ export const parseFileContent = (fileContent) => {
     throw new Error('O parâmetro deve ser uma string');
   }
 
+
   const rows = fileContent.split('\n');
   const data = [];
 
