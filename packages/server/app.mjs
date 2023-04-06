@@ -7,7 +7,7 @@ import { authRoutes } from './routes/auth.mjs';
 import { userRoutes } from './routes/users.mjs';
 import { transactionRoutes } from './routes/transactions.mjs';
 import { uploadRoutes } from './routes/upload.mjs';
-import { errorHandler } from './middlewares/errorHnalder.mjs';
+import { errorHandler } from './middlewares/errorHandler.mjs';
 import 'express-async-errors';
 
 const app = express();
