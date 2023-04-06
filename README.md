@@ -43,9 +43,9 @@ To install this project on your local machine, follow the steps below:
 ```bash
 cd fullstack-afiliados
 ```
-3. Install the project's dependencies:
+3. Install the project's dependencies: (You must use yarn to install all dependencies, including dependencies from packages project)
 ```bash
-npm install
+yarn install
 ```
 4. MySQL Instructions
 
