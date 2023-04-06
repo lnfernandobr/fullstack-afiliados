@@ -47,10 +47,21 @@ cd fullstack-afiliados
 ```bash
 npm install
 ```
-4. To run both the client and the server, you can run the `start` script in the root folder:
+4. MySQL Instructions
+
+To use this application, it is necessary to have MySQL installed on your machine and to have created a database with the name `fullstackaffiliate`.  
+
+To install MySQL on your machine, you can follow the instructions on the official MySQL website: https://dev.mysql.com/downloads/.
+
+To create the `fullstackaffiliate` database, you can use the graphical interface of MySQL Workbench or execute the following SQL command in the MySQL terminal:
+```
+CREATE DATABASE fullstackaffiliate;
+```
+5. To run both the client and the server, you can run the `start` script in the root folder:
 ```bash
 npm run start
 ```
+
 After following these steps, the server will be available at http://localhost:5000 and the client at http://localhost:3000.
 
 ## Using Docker Compose
