@@ -1,7 +1,7 @@
 FROM node:16-alpine
 
 # Define variáveis de ambiente para a conexão com o banco de dados
-ENV JWT_SECRET=secreto
+ENV JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 ENV DB_DATABASE=fullstackaffiliate
 ENV DB_HOST=localhost
 ENV DB_PORT=3306

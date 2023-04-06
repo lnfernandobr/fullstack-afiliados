@@ -19,7 +19,7 @@ services:
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: fullstackaffiliate
-      JWT_SECRET: secreto
+      JWT_SECRET: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
       DB_DATABASE: fullstackaffiliate
       DB_DIALECT: mysql
       DB_USERNAME: root
