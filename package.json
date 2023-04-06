@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "run:server": "yarn workspace @fullstack-afiliados/server run start",
-    "run:client": "yarn workspace @fullstack-afiliados/client run start"
+    "run:client": "yarn workspace @fullstack-afiliados/client run start",
+    "start": "yarn run run:server & yarn run run:client"
   },
   "workspaces": {
     "packages": [

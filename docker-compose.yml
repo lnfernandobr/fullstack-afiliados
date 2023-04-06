@@ -1,0 +1,34 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fullstackaffiliate
+    volumes:
+      - ./db:/var/lib/mysql
+  api:
+    build:
+      context: ./packages/server
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: fullstack-afiliados-db-1
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: fullstackaffiliate
+      JWT_SECRET: secreto
+      DB_DATABASE: fullstackaffiliate
+      DB_DIALECT: mysql
+      DB_USERNAME: root
+      PORT: 5000
+
+    command: npm run start
+  client:
+    build:
+      context: ./packages/client
+    ports:
+      - "3000:3000"
+    command: npm start
