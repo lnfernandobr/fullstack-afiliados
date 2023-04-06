@@ -146,6 +146,12 @@ export const saveTransactions = async ({ transactions, userId }) => {
       where: { name: transaction.product },
     });
 
+    if (!productDb && transaction.type !== PRODUCTOR_SALE) {
+      throw new Error(
+        'Você está tentando sincronizar a transação de um afiliado, mas, as informações do produtor e do produto não foram sincronizadas ainda. Você precisa primeira, enviar as tranções do produtor.',
+      );
+    }
+
     if (transaction.type === AFFILIATE_SALE) {
       const affiliateDb = await createOrFindAffiliate({
         name: transaction.seller,
