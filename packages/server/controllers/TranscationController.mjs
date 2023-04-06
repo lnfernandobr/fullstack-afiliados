@@ -1,11 +1,5 @@
-import {
-  Affiliate,
-  Creator,
-  Product,
-  sequelize,
-  Transaction,
-} from '../models/index.mjs';
-import { Op } from 'sequelize';
+import { Creator, Product, sequelize } from '../models/index.mjs';
+import { TRANSACTIONS_METHODS } from './Transaction.utils.mjs';
 
 export const getTransactions = async (req, res) => {
   try {
@@ -22,126 +16,13 @@ export const getTransactions = async (req, res) => {
   }
 };
 
-const createOrFindCreator = async ({ name }) => {
-  const creator = await Creator.findOne({
-    where: {
-      name: {
-        [Op.eq]: name,
-      },
-    },
-  });
-
-  if (creator) {
-    return creator;
-  }
-
-  return Creator.create({ name });
-};
-const createOrFindAffiliate = async ({ name }) => {
-  const affiliate = await Affiliate.findOne({
-    where: {
-      name: {
-        [Op.eq]: name,
-      },
-    },
-  });
-
-  if (affiliate) {
-    return affiliate;
-  }
-
-  return Affiliate.create({ name });
-};
-
-export const createTranscation = async (transcation) => {
-  // if transcation was already synced we'll find it in database.
-  const transcationDb = await Transaction.findOne({
-    where: {
-      type: {
-        [Op.eq]: transcation.type,
-      },
-      date: {
-        [Op.eq]: transcation.date,
-      },
-      productId: {
-        [Op.eq]: transcation.productId,
-      },
-      userId: {
-        [Op.eq]: transcation.userId,
-      },
-      ...(transcation.affiliateId
-        ? {
-            affiliateId: {
-              [Op.eq]: transcation.affiliateId,
-            },
-          }
-        : {}),
-      ...(transcation.creatorId
-        ? {
-            creatorId: {
-              [Op.eq]: transcation.creatorId,
-            },
-          }
-        : {}),
-    },
-  });
-
-  if (transcationDb) {
-    // eslint-disable-next-line no-console
-    console.warn('This transaction was already synced');
-    return null;
-  }
-
-  return Transaction.create(transcation);
-};
-
-const saveProductIfDontExists = async ({ name, creatorId }) => {
-  const productDb = await Product.findOne({
-    where: {
-      name: {
-        [Op.eq]: name,
-      },
-    },
-  });
-
-  if (productDb) {
-    return productDb;
-  }
-
-  return Product.create({ name, creatorId });
-};
-
 export const saveTransactions = async ({ transactions, userId }) => {
-  for (const transaction of transactions) {
-    const PRODUCTOR_SALE = 1;
-    const AFFILIATE_SALE = 2;
-    const AFFILIATE_COMISSION = 3;
-    const PRODUCT_COMISSION = 4;
+  const PRODUCTOR_SALE = 1;
+  const AFFILIATE_SALE = 2;
+  const AFFILIATE_COMISSION = 3;
+  const PRODUCT_COMISSION = 4;
 
-    if (
-      transaction.type === PRODUCTOR_SALE ||
-      transaction.type === PRODUCT_COMISSION
-    ) {
-      const creatorDb = await createOrFindCreator({ name: transaction.seller });
-      const product = await saveProductIfDontExists({
-        name: transaction.product,
-        creatorId: creatorDb.id,
-      });
-
-      const { value } = transaction;
-      const tr = {
-        date: new Date(transaction.date),
-        creatorId: creatorDb.id,
-        productId: product.id,
-        type: transaction.type,
-        userId,
-        value: transaction.type === PRODUCT_COMISSION ? -value : value,
-      };
-
-      await createTranscation(tr);
-      continue;
-    }
-
+  const getProductDb = async (transaction) => {
     const productDb = await Product.findOne({
       where: { name: transaction.product },
     });
@@ -151,42 +32,85 @@ export const saveTransactions = async ({ transactions, userId }) => {
         'Você está tentando sincronizar a transação de um afiliado, mas, as informações do produtor e do produto não foram sincronizadas ainda. Você precisa primeira, enviar as tranções do produtor.',
       );
     }
+    return productDb;
+  };
 
-    if (transaction.type === AFFILIATE_SALE) {
-      const affiliateDb = await createOrFindAffiliate({
-        name: transaction.seller,
-      });
+  for (const transaction of transactions) {
+    switch (transaction.type) {
+      case PRODUCTOR_SALE: {
+        const creatorDb = await TRANSACTIONS_METHODS.createOrFindCreator({
+          name: transaction.seller,
+        });
+        const product = await TRANSACTIONS_METHODS.saveProductIfDontExists({
+          name: transaction.product,
+          creatorId: creatorDb.id,
+        });
+        await TRANSACTIONS_METHODS.createTransaction({
+          date: new Date(transaction.date),
+          creatorId: creatorDb.id,
+          productId: product.id,
+          type: transaction.type,
+          userId,
+          value: transaction.value,
+        });
+        break;
+      }
 
-      const creatorDb = await Creator.findOne({
-        where: { id: productDb.creatorId },
-      });
+      case AFFILIATE_SALE: {
+        const productDb = await getProductDb(transaction);
+        const affiliateDb = await TRANSACTIONS_METHODS.createOrFindAffiliate({
+          name: transaction.seller,
+        });
+        const creatorDb = await Creator.findOne({
+          where: { id: productDb.creatorId },
+        });
+        await TRANSACTIONS_METHODS.createTransaction({
+          date: new Date(transaction.date),
+          value: transaction.value,
+          creatorId: creatorDb.id,
+          saleMadeBy: affiliateDb.id,
+          productId: productDb.id,
+          type: transaction.type,
+          userId,
+        });
+        break;
+      }
 
-      await createTranscation({
-        date: new Date(transaction.date),
-        value: transaction.value,
-        creatorId: creatorDb.id,
-        saleMadeBy: affiliateDb.id,
-        productId: productDb.id,
-        type: transaction.type,
-        userId,
-      });
-      continue;
-    }
+      case AFFILIATE_COMISSION: {
+        const productDb = await getProductDb(transaction);
+        const affiliateDb = await TRANSACTIONS_METHODS.createOrFindAffiliate({
+          name: transaction.seller,
+        });
+        await TRANSACTIONS_METHODS.createTransaction({
+          date: new Date(transaction.date),
+          value: transaction.value,
+          affiliateId: +affiliateDb.id,
+          productId: +productDb.id,
+          saleMadeBy: +affiliateDb.id,
+          type: transaction.type,
+          userId,
+        });
+        break;
+      }
 
-    if (transaction.type === AFFILIATE_COMISSION) {
-      const affiliateDb = await createOrFindAffiliate({
-        name: transaction.seller,
-      });
-
-      await createTranscation({
-        date: new Date(transaction.date),
-        value: transaction.value,
-        affiliateId: +affiliateDb.id,
-        productId: +productDb.id,
-        saleMadeBy: +affiliateDb.id,
-        type: transaction.type,
-        userId,
-      });
+      case PRODUCT_COMISSION: {
+        const creatorDb = await TRANSACTIONS_METHODS.createOrFindCreator({
+          name: transaction.seller,
+        });
+        const product = await TRANSACTIONS_METHODS.saveProductIfDontExists({
+          name: transaction.product,
+          creatorId: creatorDb.id,
+        });
+        await TRANSACTIONS_METHODS.createTransaction({
+          date: new Date(transaction.date),
+          creatorId: creatorDb.id,
+          productId: product.id,
+          type: transaction.type,
+          userId,
+          value: -transaction.value,
+        });
+        break;
+      }
     }
   }
 };
